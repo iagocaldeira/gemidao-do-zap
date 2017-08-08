@@ -32,7 +32,7 @@ const callTotalVoice = (from, to, token) => request.post(routeTotalVoice('/compo
     });
 
 // DirectCall
-const smsDirectCall = (from, to, token) => request.post(route('/sms/send'))
+const smsDirectCall = (from, to, token) => request.post(routeDirectCall('/sms/send'))
     .set('Accept', 'application/json')
     .send({
         origem: from,
@@ -41,7 +41,7 @@ const smsDirectCall = (from, to, token) => request.post(route('/sms/send'))
         texto: gemidaoInText
     });
 
-const callDirectCall = (from, to, token) => request.post(route('/sms/audio'))
+const callDirectCall = (from, to, token) => request.post(routeDirectCall('/sms/audio'))
     .set('Access-Token', token)
     .set('Accept', 'application/json')
     .send({
