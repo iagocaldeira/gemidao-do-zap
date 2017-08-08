@@ -37,14 +37,15 @@ Você terá disponível globalmente o comando `gemidao-do-zap`.
 
 | Parâmetro | Obrigatório        | Descrição                                                 |
 |-----------|--------------------|-----------------------------------------------------------|
-| `--token` | :white_check_mark: | Seu token de acesso do TotalVoice                         |
+| `--token` | :white_check_mark: | Seu token de acesso do TotalVoice ou DirectCall           |
 | `--de`    |                    | Quem está enviando o gemidão? Qualquer número telefônico! |
 | `--para`  | :white_check_mark: | Quem é a vítima do gemidão do zap?                        |
 | `--sms`   |                    | Se definido, será enviado um SMS ao invés de uma chamada  |
+| `--api`   | :white_check_mark: | Escolha entre TotalVoice ou DirectCall                    |
 
 ### Exemplo
 
-`gemidao-do-zap --de=47998569631 --para=47996326548 --token=ade6a19ecee14577634f66af105eb68c`
+`gemidao-do-zap --de=47998569631 --para=47996326548 --api=TotalVoice --token=ade6a19ecee14577634f66af105eb68c`
 
 Observações:
 
