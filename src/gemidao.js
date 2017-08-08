@@ -51,21 +51,25 @@ const callDirectCall = (from, to, token) => request.post(route('/sms/audio'))
 
 // Comum
 export default function gemidao(args) {
-    if (!/^[a-f0-9]{45}$/.test(args.token)) {
-        return reject(new Error('Token inválido. Obtenha um em https://www.directcallsoft.com'));
-    }
-
     if (!/^[0-9]{10,11}$/.test(args.para)) {
         return reject(new Error('Número de telefone inválido'));
     }
 
     switch(args.api) {
         case "TotalVoice":
+            if (!/^[a-f0-9]{32}$/.test(args.token)) {
+                return reject(new Error('Token inválido. Obtenha um em https://totalvoice.com.br'));
+            }
+            
             const action = args.sms
                 ? smsTotalVoice(args.de, args.para, args.token)
                 : callTotalVoice(args.de, args.para, args.token);
             break;
         case "DirectCall":
+            if (!/^[a-f0-9]{45}$/.test(args.token)) {
+                return reject(new Error('Token inválido. Obtenha um em https://www.directcallsoft.com'));
+            }
+            
             const action = args.sms
                 ? smsDirectCall(args.de, args.para, args.token)
                 : callDirectCall(args.de, args.para, args.token);
