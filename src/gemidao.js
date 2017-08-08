@@ -62,7 +62,7 @@ export default function gemidao(args) {
             }
             
             const action = args.sms
-                ? smsTotalVoice(args.de, args.para, args.token)
+                ? smsTotalVoice(args.para, args.token)
                 : callTotalVoice(args.de, args.para, args.token);
             break;
         case "DirectCall":
