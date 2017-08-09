@@ -10,7 +10,8 @@ const emitError = message => console.log(red(` ✗ Erro: ${message}`));
 
 function cli(args) {
     gemidao(args)
-        .then(() => {
+        .then(res => {
+            console.log(res);
             emitSuccess(args.sms ? 'sms enviado!' : 'chamada efetuada!');
         })
         .catch(pipe(prop('message'), emitError));
@@ -33,6 +34,10 @@ cli(yargs
     .option('sms', {
         describe: 'Se definido, será enviado um SMS ao invés de uma chamada',
         type: 'boolean'
+    })
+    .option('api', {
+        describe: 'Escolha entre TotalVoice ou DirectCall (Padrão:TotalVoice)',
+        type: 'string'
     })
     .demandOption(['para', 'token'])
     .locale('pt_BR')

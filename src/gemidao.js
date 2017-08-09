@@ -3,8 +3,8 @@ import agent from 'superagent';
 import promisifyAgent from 'superagent-promise';
 
 const request = promisifyAgent(agent, Bluebird);
-const routeDirectCall = pathDirectCall => `https://api.directcallsoft.com${path}`;
-const routeTotalVoice = pathTotalVoice => `https://api.totalvoice.com.br${path}`;
+const routeDirectCall = pathDirectCall => `https://api.directcallsoft.com${pathDirectCall}`;
+const routeTotalVoice = pathTotalVoice => `https://api.totalvoice.com.br${pathTotalVoice}`;
 
 const gemidaoInText = 'OOOWH AHHHWN WOOOO AAAAHN WAAAAA AAAAAAHN ANN WAAA!\n'
     + 'Voce caiu no gemidao do zap';
@@ -42,7 +42,6 @@ const smsDirectCall = (from, to, token) => request.post(routeDirectCall('/sms/se
     });
 
 const callDirectCall = (from, to, token) => request.post(routeDirectCall('/sms/audio'))
-    .set('Access-Token', token)
     .set('Accept', 'application/json')
     .send({
         access_token: token,
@@ -55,35 +54,35 @@ export default function gemidao(args) {
         return reject(new Error('Número de telefone inválido'));
     }
 
-    switch(args.api) {
-        case "TotalVoice":
-            if (!/^[a-f0-9]{32}$/.test(args.token)) {
-                return reject(new Error('Token inválido. Obtenha um em https://totalvoice.com.br'));
+    const action =
+        (() => {
+            if (args.api.length === 0 || args.api === "TotalVoice") {
+                if (!/^[a-f0-9]{32}$/.test(args.token)) {
+                    return reject(new Error('Token inválido. Obtenha um em https://totalvoice.com.br'));
+                }
+                return args.sms
+                    ? smsTotalVoice(args.para, args.token)
+                    : callTotalVoice(args.de, args.para, args.token);
+            } else if (args.api === "DirectCall") {
+                // O token da DirectCall possui mais de 250 carecteres
+                // e nao tem tamanho definido, além de usar simbolos
+                //
+                // if (!/^[a-f0-9]$/.test(args.token)) {
+                //     console.log(args.token);
+                //     return reject(new Error('Token inválido. Obtenha um em https://www.directcallsoft.com'));
+                // }
+                return args.sms
+                    ? smsDirectCall(args.de, args.para, args.token)
+                    : callDirectCall(args.de, args.para, args.token);
+            } else {
+                return reject(new Error('Escolha uma das APIs Suportadas: DirectCall ou TotalVoice.'));
             }
-            
-            const action = args.sms
-                ? smsTotalVoice(args.para, args.token)
-                : callTotalVoice(args.de, args.para, args.token);
-            break;
-        case "DirectCall":
-            if (!/^[a-f0-9]{45}$/.test(args.token)) {
-                return reject(new Error('Token inválido. Obtenha um em https://www.directcallsoft.com'));
-            }
-            
-            const action = args.sms
-                ? smsDirectCall(args.de, args.para, args.token)
-                : callDirectCall(args.de, args.para, args.token);
-            break;
-        default:
-            return reject(new Error('Escolha uma das APIs Suportadas: DirectCall ou TotalVoice.'));
-    }
-
+        })();
     return action
         .catch(err => {
             if (err.status === 405 || err.status === 403) {
                 return reject(new Error((err.body || err.response.body).mensagem));
             }
-
             return reject(err);
         });
 }
