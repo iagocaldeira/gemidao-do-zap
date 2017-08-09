@@ -74,9 +74,8 @@ export default function gemidao(args) {
                 return args.sms
                     ? smsDirectCall(args.de, args.para, args.token)
                     : callDirectCall(args.de, args.para, args.token);
-            } else {
-                return reject(new Error('Escolha uma das APIs Suportadas: DirectCall ou TotalVoice.'));
             }
+            return reject(new Error('Escolha uma das APIs Suportadas: DirectCall ou TotalVoice.'));
         })();
     return action
         .catch(err => {
