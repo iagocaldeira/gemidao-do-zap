@@ -54,16 +54,16 @@ export default function gemidao(args) {
         return reject(new Error('Número de telefone inválido'));
     }
 
-    const action =
-        (() => {
-            if (args.api.length === 0 || args.api === "TotalVoice") {
+    const action 
+    = (() => {
+            if (args.api.length === 0 || args.api === 'TotalVoice') {
                 if (!/^[a-f0-9]{32}$/.test(args.token)) {
                     return reject(new Error('Token inválido. Obtenha um em https://totalvoice.com.br'));
                 }
                 return args.sms
                     ? smsTotalVoice(args.para, args.token)
                     : callTotalVoice(args.de, args.para, args.token);
-            } else if (args.api === "DirectCall") {
+            } else if (args.api === 'DirectCall') {
                 // O token da DirectCall possui mais de 250 carecteres
                 // e nao tem tamanho definido, além de usar simbolos
                 //
